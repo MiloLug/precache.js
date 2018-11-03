@@ -23,11 +23,11 @@
 			s: s
 		});
 	},
-    update=function(){
-    	navigator.serviceWorker.controller&&(
-          	alert("update found! The page will now reload."),
-        	W.location.reload());
-    },
+	update = function () {
+		navigator.serviceWorker.controller && (
+			alert("update found! The page will now reload."),
+			W.location.reload());
+	},
 	precFun = function (options, offline) {
 		var s = options;
 		caches.open(s.tempCacheName).then(function (c) {
@@ -102,14 +102,14 @@
 				})();
 				if (!navigator.serviceWorker.controller)
 					return;
-	
+
 				if (reg.waiting) {
 					reg.waiting.postMessage({
 						updateSw: true
 					});
 					return;
 				}
-	
+
 				if (reg.installing) {
 					reg.addEventListener('statechange', function () {
 						if (reg.installing.state == 'installed') {
@@ -121,10 +121,10 @@
 						}
 					});
 				}
-	
+
 				reg.addEventListener('updatefound', function () {
 					var newSW = reg.installing;
-	
+
 					newSW.addEventListener('statechange', function () {
 						if (newSW.state == 'installed') {
 							console.info('show toast and upon click update...');
@@ -146,10 +146,10 @@
 	prec = function (opt) {
 		var s = args({
 				cacheFiles: {},
-          		cacheName:"precaches",
+				cacheName: "precaches",
 				updateIf: false,
 				serviceWorkerFile: "./sw.js",
-				tempCacheName: opt.cacheName+"_TEMP",
+				tempCacheName: opt.cacheName + "_TEMP",
 				scope: "./",
 				checkServiceWorkers: true
 			}, opt);
@@ -161,22 +161,22 @@
 		}
 	};
 	W.precache = prec;
-  	W.precache.cache=function(name){
-      	return {
-          	add:function(url,value){
-      			return caches.open(name).then(function(c){
-                  	if(value)
-                      	return c.put(url,value);
-                  	else{
-                      	return c.add(url);
-                    }
-                });
-            },
-          	get:function(url){
-              	return caches.open(name).then(function(c){
-                  	return c.match(url);
-                });
-            }
-        };
-    };
+	W.precache.cache = function (name) {
+		return {
+			add: function (url, value) {
+				return caches.open(name).then(function (c) {
+					if (value)
+						return c.put(url, value);
+					else {
+						return c.add(url);
+					}
+				});
+			},
+			get: function (url) {
+				return caches.open(name).then(function (c) {
+					return c.match(url);
+				});
+			}
+		};
+	};
 })(window);
