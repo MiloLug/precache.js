@@ -37,7 +37,7 @@
 				if (e.data.type = "reload")
 					update();
 			});
-			navigator.serviceWorker.register(s.SWFile, {
+			navigator.serviceWorker.register(s.serviceWorkerFile, {
 				scope: s.scope
 			}).then(function (reg) {
 				console.info("ServiceWorker registration successful with scope: ", reg.scope);
