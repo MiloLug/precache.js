@@ -145,7 +145,8 @@
 	},
 	prec = function (opt) {
 		var s = args({
-				cacheFiles: [],
+				cacheFiles: {},
+          		cacheName:"precaches",
 				updateIf: false,
 				serviceWorkerFile: "./sw.js",
 				tempCacheName: opt.cacheName+"_TEMP",
