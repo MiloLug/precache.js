@@ -19,8 +19,11 @@
 |--|--|--|--|
 |cacheName|String|the name of the partition in the cache where all files will be saved|`"precaches"`|
 |tempCacheName|String|the name of the partition in the cache where important precache.js information will be saved|`cacheName+"_TEMP"`|
+|serviceWorkerFile|String|url to `sw.js`|`"./sw.js"` (in current dir)|
+|scope|String|scope of service worker|`./` (dir of `sw.js` and maybe current dir)|
 |cacheFiles|Object|list of cached files|`{}`|
 |updateIf|Object|cache update conditions|`false` (will not be updated)|
+|checkServiceWorkers|Boolean|check browser for service workers support|`true`|
 
 ***general form:***
 
@@ -34,6 +37,9 @@
 				...
 			]
 		},
+		serviceWorkerFile:".../file.js",
+		scope:".../",
+		checkServiceWorkers:true,
 		updateIf:updateOptions
     }
 #### [Object] updateOptions:
