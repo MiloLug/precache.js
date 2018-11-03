@@ -41,6 +41,7 @@
 |--|--|--|--|
 |changedFiles|Array|names of files, when change that, the cache will update|`none`|
 |minTime|Number|UNIX time format. After that time cache will begin to update|`none`|
+
 ***general form:***
 
     {
