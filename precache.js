@@ -28,10 +28,84 @@
 			alert("update found! The page will now reload."),
 			W.location.reload());
 	},
+	checker = function (options,reg) {
+		var check = false,
+		allChecked = {
+			changedFiles: 0,
+			minTime: false
+		},
+		s = args({
+				changedFiles: false,
+				minTime: false
+			}, options.updateIf||{}),
+		success = function (resp, file) {
+			var tmp,
+			rclone = resp.clone();
+			file = "@:precacheJS_" + file + "_";
+			caches.open(options.tempCacheName).then(function (cache) {
+				tmp = cache.match(file);
+				return Promise.all([
+						resp.text(),
+						tmp.then(function(tmpFile){
+                          	return tmpFile ? tmpFile.text() : tmpFile;
+                        })
+					]);
+			}).then(function (data) {
+				if (data[0] !== data[1])
+					check = true;
+				return caches.open(options.tempCacheName).then(function (cache) {
+					cache.put(file, rclone);
+				});
+			}).then(function () {
+				allChecked.changedFiles++;
+				if (allChecked.changedFiles === s.changedFiles.length)
+					allChecked.changedFiles = true;
+			});
+
+		},
+		fail = function () {
+			allChecked.changedFiles++;
+			if (allChecked.changedFiles === s.changedFiles.length)
+				allChecked.changedFiles = true;
+		},
+		fn = function (f) {
+			return fetch(f, {
+				cache: "no-cache"
+			}).then(function (r) {
+				success(r, f);
+			}, fail);
+		};
+
+		if (s.changedFiles) {
+			s.changedFiles.forEach(function (f, ind) {
+				fn(f);
+			});
+		} else {
+			allChecked.changedFiles = true;
+		}
+
+		if (s.minTime !== false && Date.now() >= s.minTime) {
+			check = true;
+		}
+		allChecked.minTime = true;
+
+		console.log(44);
+		(function interval() {
+			if (allChecked.changedFiles === true && allChecked.minTime === true) {
+				console.log(99999);
+				if (check)
+					updateCache(reg, options);
+				else
+					installCache(reg, options);
+				return;
+			}
+			setTimeout(interval, 1);
+		})();
+	},
 	precFun = function (options, offline) {
 		var s = options;
-		caches.open(s.tempCacheName).then(function (c) {
-			return c.put("@:precacheJS_cacheName_", new Response(s.cacheName));
+		caches.open(s.tempCacheName).then(function (cache) {
+			return cache.put("@:precacheJS_cacheName_", new Response(s.cacheName));
 		}).then(function () {
 			navigator.serviceWorker.addEventListener('message', function (e) {
 				if (e.data.type = "reload")
@@ -41,65 +115,9 @@
 				scope: s.scope
 			}).then(function (reg) {
 				console.info("ServiceWorker registration successful with scope: ", reg.scope);
-				var check = false,
-				allChecked = {
-					changedFiles: 0,
-					minTime: false
-				},
-				u = s.updateIf || {},
-				fn = function (f) {
-					return fetch(f, {
-						cache: "no-cache"
-					}).then(
-						function (r) {
-						caches.open(s.tempCacheName).then(function (c) {
-							c.match(f).then(function (cR) {
-								return cR ? cR.text() : cR
-							}).then(function (cT) {
-								var rclone = r.clone();
-								r.text().then(function (t) {
-									if (t !== cT)
-										check = true;
-									caches.open(s.tempCacheName).then(function (c) {
-										c.put(f, rclone);
-									}).then(function () {
-										allChecked.changedFiles++;
-										if (allChecked.changedFiles === u.changedFiles.length)
-											allChecked.changedFiles = true;
-									});
-								});
-							});
-						});
-					},
-						function (r) {
-						allChecked.changedFiles++;
-						if (allChecked.changedFiles === u.changedFiles.length)
-							allChecked.changedFiles = true;
-					});
-				};
-				if (u.changedFiles) {
-					u.changedFiles.forEach(function (f, ind) {
-						fn(f);
-					});
-				} else {
-					allChecked.changedFiles = true;
-				}
-				if (u.minTime !== undefined && Date.now() >= u.minTime) {
-					check = true;
-				}
-				allChecked.minTime = true;
-				console.log(44);
-				(function interval() {
-					if (allChecked.changedFiles === true && allChecked.minTime === true) {
-						console.log(99999);
-						if (check)
-							updateCache(reg, s);
-						else
-							installCache(reg, s);
-						return;
-					}
-					setTimeout(interval, 1);
-				})();
+
+				checker(options,reg);
+
 				if (!navigator.serviceWorker.controller)
 					return;
 
@@ -143,20 +161,46 @@
 			});
 		});
 	},
-	prec = function (opt) {
-		var s = args({
-				cacheFiles: {},
-				cacheName: "precaches",
-				updateIf: false,
-				serviceWorkerFile: "./sw.js",
-				tempCacheName: opt.cacheName + "_TEMP",
-				scope: "./",
-				checkServiceWorkers: true
-			}, opt);
-
+	prec = function (opt,tempCacheName) {
 		if (('navigator' in W && 'serviceWorker' in navigator) || !s.checkServiceWorkers) {
 			window.addEventListener("load", function () {
-				precFun(s);
+				tempCacheName=tempCacheName||"@:precacheJS_TEMP_CACHE_";
+				new Promise(function (resolve, reject) {
+					if (opt.constructor===String){
+						var precOpt="@:precacheJS_"+opt+"_OPTIONS_";
+						fetch(opt, {
+							cache: "no-cache"
+						}).then(
+							function(resp){
+								caches.open(tempCacheName).then(function(cache){
+									cache.put(precOpt,resp);
+								});
+								return resp.clone();
+							},
+							function(resp){
+								return caches.open(tempCacheName).then(function(cache){
+									return cache.match(precOpt);
+								});
+							}
+						).then(function(resp){
+                          	console.log(resp);
+							resolve(resp?resp.json():{});
+						});
+                	}else
+						return opt;
+				}).then(function (s) {
+                  	console.log(s);
+					s = args({
+							cacheFiles: {},
+							cacheName: "precaches",
+							updateIf: false,
+							serviceWorkerFile: "./sw.js",
+							scope: "./",
+							checkServiceWorkers: true
+						}, s);
+					s.tempCacheName=tempCacheName;
+					precFun(s);
+				});
 			});
 		}
 	};
