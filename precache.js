@@ -28,7 +28,7 @@
 			alert("update found! The page will now reload."),
 			W.location.reload());
 	},
-	checker = function (options,reg) {
+	checker = function (options, reg) {
 		var check = false,
 		allChecked = {
 			changedFiles: 0,
@@ -37,7 +37,7 @@
 		s = args({
 				changedFiles: false,
 				minTime: false
-			}, options.updateIf||{}),
+			}, options.updateIf || {}),
 		success = function (resp, file) {
 			var tmp,
 			rclone = resp.clone();
@@ -46,9 +46,9 @@
 				tmp = cache.match(file);
 				return Promise.all([
 						resp.text(),
-						tmp.then(function(tmpFile){
-                          	return tmpFile ? tmpFile.text() : tmpFile;
-                        })
+						tmp.then(function (tmpFile) {
+							return tmpFile ? tmpFile.text() : tmpFile;
+						})
 					]);
 			}).then(function (data) {
 				if (data[0] !== data[1])
@@ -116,7 +116,7 @@
 			}).then(function (reg) {
 				console.info("ServiceWorker registration successful with scope: ", reg.scope);
 
-				checker(options,reg);
+				checker(options, reg);
 
 				if (!navigator.serviceWorker.controller)
 					return;
@@ -161,35 +161,32 @@
 			});
 		});
 	},
-	prec = function (opt,tempCacheName) {
+	prec = function (opt, tempCacheName) {
 		if (('navigator' in W && 'serviceWorker' in navigator) || !s.checkServiceWorkers) {
 			window.addEventListener("load", function () {
-				tempCacheName=tempCacheName||"@:precacheJS_TEMP_CACHE_";
+				tempCacheName = tempCacheName || "@:precacheJS_TEMP_CACHE_";
 				new Promise(function (resolve, reject) {
-					if (opt.constructor===String){
-						var precOpt="@:precacheJS_"+opt+"_OPTIONS_";
+					if (opt.constructor === String) {
+						var precOpt = "@:precacheJS_" + opt + "_OPTIONS_";
 						fetch(opt, {
 							cache: "no-cache"
 						}).then(
-							function(resp){
-								caches.open(tempCacheName).then(function(cache){
-									cache.put(precOpt,resp);
-								});
-								return resp.clone();
-							},
-							function(resp){
-								return caches.open(tempCacheName).then(function(cache){
-									return cache.match(precOpt);
-								});
-							}
-						).then(function(resp){
-                          	console.log(resp);
-							resolve(resp?resp.json():{});
+							function (resp) {
+							caches.open(tempCacheName).then(function (cache) {
+								cache.put(precOpt, resp);
+							});
+							return resp.clone();
+						},
+							function (resp) {
+							return caches.open(tempCacheName).then(function (cache) {
+								return cache.match(precOpt);
+							});
+						}).then(function (resp) {
+							resolve(resp ? resp.json() : {});
 						});
-                	}else
+					} else
 						return opt;
 				}).then(function (s) {
-                  	console.log(s);
 					s = args({
 							cacheFiles: {},
 							cacheName: "precaches",
@@ -198,7 +195,7 @@
 							scope: "./",
 							checkServiceWorkers: true
 						}, s);
-					s.tempCacheName=tempCacheName;
+					s.tempCacheName = tempCacheName;
 					precFun(s);
 				});
 			});
