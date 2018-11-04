@@ -72,3 +72,7 @@ takes the name of the `.json` file with caching parameters
  - add `sw.js` to cached files 
  - add cached files to `updateIf.changedFiles` *(it's pointless :))*
  - cache folders (**except folders with cached files- `./.` `css/.` `someFolderWithCachedFiles/.`** ...)
+
+## Examples
+[precache.json (options in json)](https://github.com/MiloLug/prcon3/blob/master/precache.json)
+[precache connecting](https://github.com/MiloLug/prcon3/blob/master/index.html)
