@@ -70,5 +70,5 @@ takes the name of the `.json` file with caching parameters
 
  - add file with options to cached files
  - add `sw.js` to cached files 
- - add cached files in `updateIf.changedFiles` *(it's pointless :))*
+ - add cached files to `updateIf.changedFiles` *(it's pointless :))*
  - cache folders (**except folders with cached files- `./.` `css/.` `someFolderWithCachedFiles/.`** ...)
