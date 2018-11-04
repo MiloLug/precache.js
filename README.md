@@ -75,4 +75,5 @@ takes the name of the `.json` file with caching parameters
 
 ## Examples
 [precache.json (options in json)](https://github.com/MiloLug/prcon3/blob/master/precache.json)
+
 [precache connecting](https://github.com/MiloLug/prcon3/blob/master/index.html)
