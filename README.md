@@ -35,20 +35,21 @@ takes the name of the `.json` file with caching parameters
 ***general form:***
 
     {
-	    "cacheName":"name",
-	    "cacheFiles":{
-			"path":[
+		"cacheName": "name",
+		"cacheFiles": {
+			"path": [
 				".",
 				"file1",
 				"file2",
 				...
 			]
 		},
-		"serviceWorkerFile":".../file.js",
-		"scope":".../",
-		"checkServiceWorkers":true,
-		"updateIf":updateOptions
-    }
+		"serviceWorkerFile": ".../file.js",
+		"scope": ".../",
+		"checkServiceWorkers": true,
+		"updateIf": updateOptions
+	}
+
 #### [Object] updateOptions:
 |property|type|info|default|
 |--|--|--|--|
