@@ -231,8 +231,8 @@
 				});
 			},
 			get: function (url) {
-				var c = caches.open(name).then(function (c) {
-						return c.match(url);
+				var c = caches.open(name).then(function (cache) {
+						return cache.match(url);
 					});
 				return {
 					to: function (type) {
@@ -240,9 +240,7 @@
 							return resp ? type ? resp[type]() : resp : undefined;
 						});
 					},
-					then: function (fn, errFn) {
-						return c.then(fn, errFn);
-					}
+					then: c.then
 				};
 			}
 		};
