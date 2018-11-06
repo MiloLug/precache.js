@@ -95,5 +95,5 @@ takes the name of the `.json` file with caching parameters
 ***
 |`window.precache.cache(name).get(url)`|arguments(if function)|info|
 |--|--|--|
-|`.to(type)`|(`String`=`"text"|"json"|"fileReader"|"clone"|"Other method of Respone"`)|Returns Promise of some method|
+|`.to(type)`|(`String`=`"text"\|"json"\|"fileReader"\|"clone"\|"Other method of Respone"`)|Returns Promise of some method|
 |`.then`||Promise from `Cache.match(`*`url`*`)`|
