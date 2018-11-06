@@ -14,16 +14,17 @@
 #### initialize precaching with the precache function:
 
     precache(options,tempCacheName)
-#### [String] tempCacheName:
+## ???
+#### `String` tempCacheName:
 default value:
 
     "@:precacheJS_TEMP_CACHE_"
 
 the name of the partition in the cache where important precache.js information will be saved
 
-#### [String] *(if string, then)* options:
+#### `String` *(if string, then)* options:
 takes the name of the `.json` file with caching parameters
-#### [Object] *(if options is string, this placed in the JSON file, else options get the Object with next properties)* options:
+#### `Object` *(if options is string, this placed in the JSON file, else options get the Object with next properties)* options:
 |property|type|info|default|
 |--|--|--|--|
 |`cacheName`|String|the name of the partition in the cache where all files will be saved|`"precaches"`|
@@ -50,7 +51,7 @@ takes the name of the `.json` file with caching parameters
 		"updateIf": updateOptions
 	}
 
-#### [Object] updateOptions:
+#### `Object` updateOptions:
 |property|type|info|default|
 |--|--|--|--|
 |`changedFiles`|Array|names of files, when change that, the cache will update|`none`|
