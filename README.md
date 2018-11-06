@@ -14,7 +14,7 @@
 #### initialize precaching with the precache function:
 
     precache(options,tempCacheName)
-## ???
+## Explanation
 #### `String` tempCacheName:
 default value:
 
